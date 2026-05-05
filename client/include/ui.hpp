@@ -1,10 +1,9 @@
 #ifndef UI_HPP
 #define UI_HPP
 
-#include <vector>
 #include <chrono>
 #include <string>
-
+#include <vector>
 #include "common-types.hpp"
 
 class UI
@@ -18,12 +17,8 @@ public:
 
   virtual void updateServers(std::map< std::string, ServerInfo > servers) = 0;
 
-  virtual void updateMetricGraph
-  (
-    const std::string & name,
-    const std::string & pc_part,
-    std::vector< std::pair< std::chrono::system_clock::time_point, metric_value > > values
-  ) = 0;
+  virtual void updateMetricGraph(const std::string & name, const std::string & pc_part,
+      std::vector< std::pair< std::chrono::system_clock::time_point, metric_value > > values) = 0;
 };
 
 #endif
