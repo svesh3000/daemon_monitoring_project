@@ -47,7 +47,7 @@ $ make test-daemon
 Дополнительной возможностью является запуск динамического анализатора Valgrind для запускаемых программ. Для этого необходимо указать в переменной VALGRIND параметры анализатора так, как это делается для `ARGS/TEST_ARGS`.
 
 ## Автоматическое форматирование
-Доступно автоматечское форматирование кода с помощью `clang-format`. Файл с конфигуерацией `.clang-format`. Минимальная требуемая версия для использования всех функций - clang-format-20.
+Доступно автоматическое форматирование кода с помощью `clang-format`. Файл с конфигурацией `.clang-format`. Минимальная требуемая версия для использования всех функций - clang-format-20.
 
 Форматирование полностью по CG.
 
@@ -57,16 +57,16 @@ clang-format-20 -i --style=file:.clang-format --files=daemon/src/*.cpp
 ```
 
 Если не хочется устанавливать новую версию, из файла .clang-format надо будет убрать строки:
-- RemoveParentheses: ReturnStatement
-- BreakTemplateDeclarations: Yes
+- AllowShortNamespacesOnASingleLine: false
+- InsertBraces: true
+- InsertNewlineAtEOF: true
 - KeepEmptyLines:
     AtEndOfFile: true
     AtStartOfBlock: false
-- InsertNewlineAtEOF: true
-- AllowShortNamespacesOnASingleLine: false
-- InsertBraces: true
+- BreakTemplateDeclarations: Yes
+- RemoveParentheses: ReturnStatement
 
-Большинство из них некритичные, самое важное наверное InsertNewlineAtEOF
+Большинство из них некритичные, самое важное `InsertNewlineAtEOF`.
 
 ### Установка clang-format-20
 В стандартных репозиториях Debian/Ubuntu последняя версия clang-format и других инструментов clang - 14. Чтобы установить более новую версию, нужно использовать скрипт с официального сайта llvm:
