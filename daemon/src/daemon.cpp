@@ -49,13 +49,13 @@ Daemon::Daemon(const models::DaemonConfig& config):
 
 void Daemon::start()
 {
-  running = true;
+  running.store(true);
 }
 void Daemon::runCollect()
 {
   std::chrono::seconds interval(monitor_interval_);
 
-  while (running)
+  while (running.load())
   {
     std::pair< MetricMap, std::string > metric = getMetrics();
     nlohmann::json json_metric = makeJson(metric.first, metric.second);
@@ -68,7 +68,7 @@ void Daemon::runSend()
 {
   std::chrono::seconds interval(send_interval_);
 
-  while (running)
+  while (running.load())
   {
     MetricBatch batch = collectMetricBatch();
     if (!batch.empty())
@@ -84,7 +84,7 @@ void Daemon::runRepeat()
 {
   std::chrono::seconds interval(repeat_interval_);
  
-  while (running)
+  while (running.load())
   {
     MetricBatch batch = collectRepeatBatch();
     if (!batch.empty())
@@ -98,7 +98,7 @@ void Daemon::runRepeat()
 }
 void Daemon::stop()
 {
-  running = false;
+  running.store(false);
 }
 void Daemon::remainingCases()
 {

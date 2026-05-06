@@ -5,6 +5,7 @@
 #include <vector>
 #include <queue>
 #include <mutex>
+#include <atomic>
 #include <json.hpp>
 #include "models.hpp"
 
@@ -30,7 +31,7 @@ public:
   void stop();
   void remainingCases();
   
-//private:
+private:
   unsigned monitor_interval_;
   unsigned repeat_interval_;
   unsigned send_interval_;
@@ -41,7 +42,7 @@ public:
   std::queue< nlohmann::json > send_buffer_;
   std::queue< nlohmann::json > repeat_buffer_;
 
-  bool running;
+  std::atomic< bool > running;
 
   std::mutex buffer_mtx_;
   std::mutex repeat_mtx_;
