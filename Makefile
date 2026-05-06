@@ -100,7 +100,7 @@ out/client/%.hpp.header: client/include/%.hpp
 out/client/%.o: client/tests/%.cpp
 	@mkdir -p $(dir $@)
 	$(if $(SILENT),,@echo [C++ ] $<)
-	$(hidecmd)$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Idaemon/include -Ilibs -Wno-old-style-cast -Wno-unused-parameter -MMD -MP -c -o $@ $<
+	$(hidecmd)$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iclient/include -Ilibs -Wno-old-style-cast -Wno-unused-parameter -MMD -MP -c -o $@ $<
 
 
 out/daemon/%.o: daemon/src/%.cpp
@@ -120,12 +120,12 @@ out/daemon/%.o: daemon/tests/%.cpp
 	$(hidecmd)$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Idaemon/include -Ilibs -Wno-old-style-cast -Wno-unused-parameter -MMD -MP -c -o $@ $<
 
 
-out/storage/%.o: daemon/src/%.cpp
+out/storage/%.o: storage/src/%.cpp
 	@mkdir -p $(dir $@)
 	$(if $(SILENT),,@echo [C++ ] $<)
-	$(hidecmd)$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Idaemon/include -Ilibs -MMD -MP -c -o $@ $<
+	$(hidecmd)$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Istorage/include -Ilibs -MMD -MP -c -o $@ $<
 
-out/storage/%.hpp.header: daemon/include/%.hpp
+out/storage/%.hpp.header: storage/include/%.hpp
 	@mkdir -p $(dir $@)
 	$(if $(SILENT),,@echo [HDR ] $<)
 	$(hidecmd)$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilibs -c -fsyntax-only $<
@@ -134,18 +134,10 @@ out/storage/%.hpp.header: daemon/include/%.hpp
 out/storage/%.o: storage/tests/%.cpp
 	@mkdir -p $(dir $@)
 	$(if $(SILENT),,@echo [C++ ] $<)
-	$(hidecmd)$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Idaemon/include -Ilibs -Wno-old-style-cast -Wno-unused-parameter -MMD -MP -c -o $@ $<
+	$(hidecmd)$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Istorage/include -Ilibs -Wno-old-style-cast -Wno-unused-parameter -MMD -MP -c -o $@ $<
 	
 
 %/.dir:
 	@mkdir -p $(@D) && touch $@
-
-print:
-	@echo "=== DAEMON DEBUG ==="
-	@echo "sources: $(call sources,daemon)"
-	@echo "objects: $(call objects,daemon)"
-	@echo "header_checks: $(call header_checks,daemon)"
-	@echo "out/daemon depends on: $(call objects,daemon) $(call header_checks,daemon)"
-
 
 include $(wildcard $(patsubst %.o,%.d,$(objects) $(test_objects)))
