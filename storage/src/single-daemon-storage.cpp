@@ -78,9 +78,13 @@ bool SingleDaemonStorage::hasTimedMetric(const std::string& time) const
 void SingleDaemonStorage::addMetric(const nlohmann::json& metric)
 {
   using json = nlohmann::json;
+  if (metric.contains("time") && hasTimedMetric(metric["time"]))
+  {
+    return;
+  }
   std::lock_guard< std::mutex > locker(mtx_);
   std::ofstream fout(path_, std::ios::app);
-  if (!fout.is_open() || hasTimedMetric(metric["time"]))
+  if (!fout.is_open())
   {
     return;
   }
