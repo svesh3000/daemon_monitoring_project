@@ -1,6 +1,5 @@
 #include <iostream>
 #include <filesystem>
-#include <variant>
 #include <httplib.h>
 #include <json.hpp>
 
@@ -12,10 +11,12 @@ namespace
   models::SharedStorageConfig parseConfig(const std::string& path)
   {
     std::ifstream fin(path);
-    if (!fin.is_open()) {
+    if (!fin.is_open())
+    {
       throw std::logic_error("<Error>: not found config file");
     }
-    nlohmann::json json_config = nlohmann::json::parse(fin);
+    nlohmann::ordered_json json_config = nlohmann::ordered_json::parse(fin);
+    std::cout << json_config.dump(2) << '\n';
     return json_config.get< models::SharedStorageConfig >();
   }
   void daemonRun(SharedStorage& storage, const httplib::Request& req, httplib::Response& res)
@@ -35,6 +36,7 @@ namespace
       return;
     }
     storage.addMetric(req.get_param_value("name"), data);
+    std::cout << storage.getTimedMetric(req.get_param_value("name"), data["time"]) << '\n';
   }
   void clientRun(const SharedStorage& storage, const httplib::Request& req, httplib::Response& res)
   {
