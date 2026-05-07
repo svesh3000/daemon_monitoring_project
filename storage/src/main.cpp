@@ -24,6 +24,9 @@ namespace
     using json = nlohmann::json;
     if (!req.has_param("name"))
     {
+      json err = {{"error", "parametere 'name' is required"}};
+      res.set_content(err.dump(), "application/json");
+      res.status = 400;
       return;
     }
     json data;
@@ -33,9 +36,16 @@ namespace
     }
     catch (const std::exception& e)
     {
+      json err = {{"error", "json body is incorrect"}};
+      res.set_content(err.dump(), "application/json");
+      res.status = 400;
       return;
     }
     storage.addMetric(req.get_param_value("name"), data);
+    json success = {{"success", "metrics addes"}};
+    res.set_content(success.dump(), "application/json");
+    res.status = 200;
+    std::cout << data.dump() << '\n';
     std::cout << storage.getTimedMetric(req.get_param_value("name"), data["time"]) << '\n';
   }
   void clientRun(const SharedStorage& storage, const httplib::Request& req, httplib::Response& res)
