@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <functional>
+#include <httplib.h>
 #include <memory>
 #include "file-readers.hpp"
 #include "ui.hpp"
@@ -10,19 +11,29 @@
 class Client
 {
 public:
-  explicit Client(std::unique_ptr< UI > ui);
+  Client(const ClientConfig & config);
 
+  Client(const Client &) = delete;
+  Client(Client &&) = delete;
+  ~Client() = default;
+
+  Client & operator=(const Client &) = delete;
+  Client & operator=(Client &&) = delete;
+
+  const std::string & getTimeMetric(const std::string & server_name, const std::string & timestamp);
+  const std::string & getIntervalMetrics(
+      const std::string & server_name, const std::string & begin_timestamp, const std::string & end_timestamp);
   void run();
+  const std::map< std::string, ServerInfo > & loadConfig(const std::string & config_path);
 
-  void loadConfig();
-
-  void refreshAllMetrics();
-  void refreshMetricsFor(const std::string & server_name);
+  // void refreshAllMetrics();
+  // void refreshMetricsFor(const std::string & server_name);
 
 protected:
-  std::unique_ptr< UI > ui_;
-  std::unique_ptr< ConfigFile > config_;
+  ClientConfig config_;
   // std::unique_ptr< MetricsPackage > config_;
+
+  const std::string & get(const std::string & query) const;
 };
 
 #endif

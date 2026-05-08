@@ -9,21 +9,20 @@
 #include <unordered_set>
 
 namespace fs = std::filesystem;
-
 using json = nlohmann::json;
 
 metric_value jsonToVariant(const json & j);
 
-class ConfigFile
+class ClientConfig
 {
 public:
-  ConfigFile() = default;
-  ConfigFile(const std::string & filepath);
+  ClientConfig() = default;
+  ClientConfig(const std::string & filepath);
 
   void load(const std::string & filepath);
   void reload();
 
-  const std::string & getConfigFilePath() const noexcept;
+  const std::string & getClientConfigFilePath() const noexcept;
   const std::string & getMetricsFilePath() const noexcept;
 
   bool hasServer(const std::string & server_name) const noexcept;
@@ -41,7 +40,6 @@ private:
 class MetricsPackage
 {
 public:
-  MetricsPackage() = default;
   void load(const std::string & filepath_to_dir_or_file);
   void reload();
   const std::string & getMetricsDirectory() const noexcept;
@@ -52,8 +50,8 @@ public:
   void clearErrors() noexcept;
 
 private:
-  std::string server_name_ = "";
-  std::string metrics_dir_path_ = "";
+  std::string server_name_;
+  std::string metrics_dir_path_;
   std::vector< MetricsFile > metrics_;
   std::unordered_set< fs::path > files_;
   std::vector< std::string > errors_;

@@ -13,8 +13,9 @@ void CMDUI::run()
   {
     std::cout << item.first << '\n';
   }
+
   std::cout << "> ";
-  for (std::string command; std::cin >> command;)
+  for (std::string command; !(std::cin >> command).eof();)
   {
     try
     {
@@ -22,7 +23,21 @@ void CMDUI::run()
     }
     catch (const std::out_of_range &)
     {
-      std::cout << "There is no such command\n";
+      std::cout << "error: invalid command\n";
+      if (std::cin.fail())
+      {
+        std::cin.clear(std::cin.rdstate() ^ std::ios::failbit);
+      }
+      std::cin.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
+    }
+    catch (const std::exception & e)
+    {
+      std::cout << "error: " << e.what() << '\n';
+      if (std::cin.fail())
+      {
+        std::cin.clear(std::cin.rdstate() ^ std::ios::failbit);
+      }
+      std::cin.ignore(std::numeric_limits< std::streamsize >::max(), '\n');
     }
     std::cout << "> ";
   }
@@ -46,7 +61,6 @@ void CMDUI::updateMetricGraph(const std::string & name, const std::string & pc_p
     auto time_t = std::chrono::system_clock::to_time_t(metric.first);
     std::stringstream ss;
     ss << std::put_time(std::localtime(&time_t), "%Y-%m-%d %H:%M:%S");
-    // LMAO
     std::cout << ss.str() << " | " << metric.second << '\n';
   }
 }
