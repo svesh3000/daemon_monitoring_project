@@ -1,0 +1,71 @@
+services:
+  storage:
+    container_name: storage
+    image: storage:local
+    build:
+      context: .
+      dockerfile: storage/Dockerfile
+    networks:
+      - net
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./storage/config:/app/storage/config:ro
+    restart: unless-stopped
+
+  daemon-1:
+    container_name: daemon-1
+    image: daemon:local
+    build:
+      context: .
+      dockerfile: daemon/Dockerfile
+    networks:
+      - net
+    depends_on:
+      - storage
+    volumes:
+      - /proc:/proc:ro
+      - /sys:/sys:ro
+      - ./daemon/config:/app/daemon/config:ro
+    environment:
+      - STORAGE_URL=http://storage:8080
+      - SERVER_NAME=server-a
+    restart: unless-stopped
+
+  daemon-2:
+    container_name: daemon-2
+    image: daemon:local
+    build:
+      context: .
+      dockerfile: daemon/Dockerfile
+    networks:
+      - net
+    depends_on:
+      - storage
+    volumes:
+      - /proc:/proc:ro
+      - /sys:/sys:ro
+      - ./daemon/config:/app/daemon/config:ro
+    environment:
+      - STORAGE_URL=http://storage:8080
+      - SERVER_NAME=server-b
+    restart: unless-stopped
+
+  client:
+    container_name: client
+    image: client:local
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    networks:
+      - net
+    profiles:
+      - cli
+    volumes:
+      - ./client/config:/app/client/config:ro
+      - ./output:/out
+    command: --help
+
+networks:
+  net:
+    driver: bridge
