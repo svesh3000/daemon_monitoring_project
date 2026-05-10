@@ -1,6 +1,6 @@
 services:
   storage:
-    container_name: storage
+    container_name: ${COMPOSE_PROJECT_NAME}-storage
     image: storage:local
     build:
       context: .
@@ -8,13 +8,13 @@ services:
     networks:
       - net
     ports:
-      - "8080:8080"
+      - "${STORAGE_PORT}:8080"
     volumes:
       - ./storage/config:/app/storage/config:ro
     restart: unless-stopped
 
-  daemon-1:
-    container_name: daemon-1
+  daemon-server-a:
+    container_name: ${COMPOSE_PROJECT_NAME}-daemon-server-a
     image: daemon:local
     build:
       context: .
@@ -30,10 +30,11 @@ services:
     environment:
       - STORAGE_URL=http://storage:8080
       - SERVER_NAME=server-a
+      - ENVIRONMENT=${ENVIRONMENT}
     restart: unless-stopped
 
-  daemon-2:
-    container_name: daemon-2
+  daemon-server-b:
+    container_name: ${COMPOSE_PROJECT_NAME}-daemon-server-b
     image: daemon:local
     build:
       context: .
@@ -49,22 +50,21 @@ services:
     environment:
       - STORAGE_URL=http://storage:8080
       - SERVER_NAME=server-b
+      - ENVIRONMENT=${ENVIRONMENT}
     restart: unless-stopped
 
   client:
-    container_name: client
+    container_name: ${COMPOSE_PROJECT_NAME}-client
     image: client:local
     build:
       context: .
       dockerfile: client/Dockerfile
     networks:
       - net
-    profiles:
-      - cli
+    profiles: ["cli"]
     volumes:
       - ./client/config:/app/client/config:ro
       - ./output:/out
-    command: --help
 
 networks:
   net:
