@@ -115,8 +115,9 @@ make -f docker.mk up         # Запуск без пересборки
 make -f docker.mk down       # Остановить все контейнеры
 make -f docker.mk logs       # Просмотр логов (всех сервисов)
 make -f docker.mk ps         # Статус контейнеров
-make -f docker.mk build      # Собрать все образы
+make -f docker.mk rebuild    # Пересобирает все образы без использования кэша
 make -f docker.mk client     # Запустить клиент
+make -f docker.mk client     # Пересобирает клиент без использования кэша
 ```
 
 ### Запуск отдельных частей

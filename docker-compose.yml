@@ -11,6 +11,7 @@ services:
       - "${STORAGE_PORT}:8080"
     volumes:
       - ./storage/config:/app/storage/config:ro
+      - ./storage/metrics:/app/storage/metrics
     restart: unless-stopped
 
   daemon-server-a:
@@ -30,6 +31,8 @@ services:
     environment:
       - SERVER_NAME=server-a
       - ENVIRONMENT=${ENVIRONMENT}
+    stdin_open: true
+    tty: true
     restart: unless-stopped
 
   daemon-server-b:
@@ -49,6 +52,8 @@ services:
     environment:
       - SERVER_NAME=server-b
       - ENVIRONMENT=${ENVIRONMENT}
+    stdin_open: true
+    tty: true
     restart: unless-stopped
 
   client:
@@ -61,7 +66,7 @@ services:
       - net
     profiles: ["cli"]
     volumes:
-      - ./client/config/init-docker.json:/app/client/config/init.json:ro
+      - ./client/config/config-docker.json:/app/client/config/config.json:ro
       - ./output:/out
 
 networks:

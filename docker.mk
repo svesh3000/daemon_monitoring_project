@@ -22,8 +22,8 @@ prod: check-deps
 down: check-deps
 	docker compose down --remove-orphans
 
-build: check-deps
-	docker compose build --parallel
+rebuild: check-deps
+	docker compose build --no-cache --parallel
 
 logs: check-deps
 	docker compose logs -f
@@ -32,4 +32,7 @@ ps: check-deps
 	docker compose ps
 
 client: check-deps
-	docker compose --profile cli run --rm client
+	docker compose --profile cli run --rm -it client
+
+rebuild-client: check-deps
+	docker compose build --no-cache client

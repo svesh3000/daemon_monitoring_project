@@ -15,3 +15,4 @@ COPY --from=builder --chown=65532:65532 /app/out/client/component /app/bin/clien
 COPY --from=builder --chown=65532:65532 /app/config /app/client/config
 USER 65532:65532
 ENTRYPOINT ["/app/bin/client"]
+CMD ["/app/client/config/config.json"]
